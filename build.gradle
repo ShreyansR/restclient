@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.example'
+version = '0.0.1'
+sourceCompatibility = '12'
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+		attributes 'Implementation-Title': 'Gradle Jar File Example',
+				'Implementation-Version': version,
+				'Main-Class': 'com.example.restclient.RestclientApplication'
+	}
+	baseName = project.name
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
+repositories {
+	mavenCentral()
+}
+
+test {
+	useJUnitPlatform()
+}
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' , {
+		exclude module: 'junit'
+	}
+	testCompile 'org.junit.jupiter:junit-jupiter:5.4.0'
+}
